@@ -33,7 +33,7 @@ namespace ServicePlatform.Utility.JwtTokenGen
                 {
                     new Claim("Id", user.Id),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                    //new Claim(JwtRegisteredClaimNames.Email, user.),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),

@@ -16,6 +16,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 
+builder.Services.AddCors(n => n.AddPolicy(name: "atisan_cors", m => m.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 builder.Services.AddControllers();
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
@@ -47,7 +48,9 @@ builder.Services.AddAuthentication(option =>
                         ValidateIssuer = false, //update later
                         ValidateAudience = false,
                         RequireExpirationTime = false, //update later
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                       
+
                     };
                 });
 
@@ -68,6 +71,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("atisan_cors");
 
 app.UseHttpsRedirection();
 

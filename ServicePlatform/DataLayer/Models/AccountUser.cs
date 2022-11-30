@@ -16,6 +16,7 @@ namespace ServicePlatform.DataLayer.Models
         public string BusinessEmail { get; set; }
         public string BusinessDescription { get; set; }
         public string Expertise { get; set; }
+        
 
     }
 }

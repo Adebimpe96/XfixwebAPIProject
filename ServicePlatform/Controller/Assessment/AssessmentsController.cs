@@ -12,7 +12,7 @@ namespace ServicePlatform.Controller.Assessment
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
     public class AssessmentsController : ControllerBase
     {
         private readonly IAssessmentService _repo;

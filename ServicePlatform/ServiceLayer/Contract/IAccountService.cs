@@ -9,8 +9,9 @@ namespace ServicePlatform.ServiceLayer.Contract
     public interface IAccountService
     {
         Task<AccountUser> GetCustomerById(int customerId);
-        Task<AccountUser> GetVendorById(int vendorId);
+        Task<AccountUser> GetVendorById(string vendorId);
         Task<AccountUser> GetAdminById(int adminId);
+        Task<int> GetUserRoleByEmail(string email);
 
         Task<AccountUser> RegisterCustomer(CustomerRegistrationRequestDto customer);
         Task<AccountUser> RegisterVendor(VendorRegistrationRequestDto vendor);

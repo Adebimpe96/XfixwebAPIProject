@@ -89,12 +89,19 @@ namespace ServicePlatform.ServiceLayer.Implementation
             }
         }
 
-        public async Task<AccountUser> GetVendorById(int vendorId)
+        public async Task<int> GetUserRoleByEmail (string email)
+        {
+            var user = await _context.AccountUsers.FirstOrDefaultAsync(m => m.Email == email);
+
+            return ((int)user.UserType);
+        }
+
+        public async Task<AccountUser> GetVendorById(string email)
         {
             try
             {
                 var vendor = await _context.AccountUsers
-                    .Where(x => x.UserId == vendorId)
+                    .Where(x => x.Email == email)
                     .FirstOrDefaultAsync();
 
                 return vendor;
@@ -116,6 +123,7 @@ namespace ServicePlatform.ServiceLayer.Implementation
                 //decrypt with password and salt... so developers cant decrypt password
 
                 var user = await _context.AccountUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
+                
 
                 if (user is not null)
                 { 
@@ -303,12 +311,12 @@ namespace ServicePlatform.ServiceLayer.Implementation
                     result.MiddleName = vendor.MiddleName;
                     result.Address = vendor.Address;
                     result.State = vendor.State;
-                    result.Country = vendor.Country;
+                    //result.Country = vendor.Country;
                     result.PhoneNumber = vendor.PhoneNumber;
                     result.Gender = vendor.Gender;
                     result.BusinessName = vendor.BusinessName;
-                    result.Website = vendor.Website;
-                    result.BusinessEmail = vendor.BusinessEmail;
+                    //result.Website = vendor.Website;
+                    //result.BusinessEmail = vendor.BusinessEmail;
                     result.BusinessEmail = vendor.BusinessDescription;
 
                     result.DateUpdated = DateTime.UtcNow;

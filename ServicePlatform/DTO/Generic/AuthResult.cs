@@ -6,6 +6,8 @@ namespace ServicePlatform.DTO.Generic
     {
         public string Token { get; set; }
         public bool IsSuccess { get; set; }
+
+        public int UserType { get; set; }
         public List<string> Errors { get; set; }
     }
 }

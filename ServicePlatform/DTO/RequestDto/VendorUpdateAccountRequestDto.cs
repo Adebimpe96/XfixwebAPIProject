@@ -9,7 +9,6 @@ namespace ServicePlatform.DTO.RequestDto
 {
     public class VendorUpdateAccountRequestDto
     {
-        [Required]
         public string MiddleName { get; set; }
 
         [Required]
@@ -18,8 +17,7 @@ namespace ServicePlatform.DTO.RequestDto
         [Required]
         public string State { get; set; }
 
-        [Required]
-        public string Country { get; set; }
+       // [Required]
 
         [Required]
         public string PhoneNumber { get; set; }
@@ -30,13 +28,9 @@ namespace ServicePlatform.DTO.RequestDto
         [Required]
         public string BusinessName { get; set; }
 
-        [Required]
-        public string Website { get; set; }
-
-        [Required]
-        public string BusinessEmail { get; set; }
-
-        [Required]
+     
         public string BusinessDescription { get; set; }
+
+        public string Expertise { get; set; } 
     }
 }

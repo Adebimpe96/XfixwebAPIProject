@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ServicePlatform.DataLayer;
 using ServicePlatform.DTO.RequestDto;
 using ServicePlatform.DTO.ResponseDto;
 using ServicePlatform.ServiceLayer.Contract;
@@ -26,6 +28,7 @@ namespace ServicePlatform.Controller
         private readonly UserManager<IdentityUser> _userManager;
         private readonly JwtConfig _jwtConfig;
         
+        
 
         public AccountsController(IAccountService repo, 
             UserManager<IdentityUser> userManager,
@@ -47,7 +50,7 @@ namespace ServicePlatform.Controller
                 {
                     var existingUser = await _userManager.FindByEmailAsync(customer.Email);
 
-                    if (existingUser is not null)
+                    if (existingUser != null)
                     {
                         return BadRequest(new CustomerRegistrationResponseDto()
                         {
@@ -143,14 +146,22 @@ namespace ServicePlatform.Controller
 
                 var result = await _repo.Login(model);
 
+                
+
+
+                var getUserType = await _repo.GetUserRoleByEmail(existingUser.Email);
+
+
+
                 if (result == true & existingUser != null & isPasswordMatch == true)
                 {
                     var token = GenerateJwtToken(existingUser);
 
                     return Ok(new CustomerRegistrationResponseDto()
                     {
-                        Token= token,    
+                        Token= token,     
                         IsSuccess = true,
+                        UserType = getUserType
                     });
                 }
                 else
@@ -266,7 +277,7 @@ namespace ServicePlatform.Controller
                 {
                     var existingUser = await _userManager.FindByEmailAsync(vendor.Email);
 
-                    if (existingUser is not null)
+                    if (existingUser != null)
                     {
                         return BadRequest(new CustomerRegistrationResponseDto()
                         {
@@ -281,7 +292,8 @@ namespace ServicePlatform.Controller
                     var newUser = new IdentityUser()
                     {
                         Email = vendor.Email,
-                        UserName = vendor.Email
+                        UserName = vendor.Email,
+                       
                     };
 
                     var IsCreated = await _userManager.CreateAsync(newUser, vendor.Password);
@@ -391,7 +403,7 @@ namespace ServicePlatform.Controller
         [HttpPut]
         [Route("updateVendor/{id}")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> UpdateVendor(VendorUpdateAccountRequestDto vendor, int id)
+        public async Task<IActionResult> UpdateVendor(VendorUpdateAccountRequestDto vendor, string email)
         {
             try
             {
@@ -400,7 +412,22 @@ namespace ServicePlatform.Controller
                     return BadRequest(ModelState);
                 }
 
-                var result = await _repo.VendorUpdateAccount(vendor, id);
+                var vendorProfile = await _repo.GetVendorById(email);
+
+                if (vendorProfile != null)
+                {
+                    vendorProfile.MiddleName = vendor.MiddleName;
+                    vendorProfile.Address = vendor.Address;
+                    vendorProfile.PhoneNumber = vendor.PhoneNumber;
+                    vendorProfile.BusinessName = vendor.BusinessName;
+                    vendorProfile.BusinessDescription = vendor.BusinessDescription;
+                    vendorProfile.Expertise = vendor.Expertise;
+
+
+
+                }
+
+                var result = await _repo.VendorUpdateAccount(vendor, email);
 
                 if (result is true)
                 {
@@ -417,7 +444,7 @@ namespace ServicePlatform.Controller
 
         [HttpGet]
         [Route("getVendorById/{id}")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetVendorById(int id)
         {
             try
